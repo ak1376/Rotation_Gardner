@@ -32,12 +32,12 @@ warnings.filterwarnings("ignore")
 bird_dir = '/Users/ananyakapoor/Dropbox (University of Oregon)/Kapoor_Ananya/01_Projects/01_a_Rotations/Gardner_Lab/Canary_Data/llb3/'
 audio_files = bird_dir+'llb3_songs'
 directory = bird_dir+ 'llb3_data_matrices/Python_Files'
-analysis_path = '/Users/ananyakapoor/Dropbox (University of Oregon)/Kapoor_Ananya/01_Projects/01_a_Rotations/Gardner_Lab/Analysis/UMAP_Analysis'
+analysis_path = '/Users/ananyakapoor/Dropbox (University of Oregon)/Kapoor_Ananya/01_Projects/01_a_Rotations/Gardner_Lab/Analysis/BYOL_Analysis'
 
 # Parameters we set
-num_spec = 1
+num_spec = 15
 window_size = 100
-stride = 10
+stride = 20
 
 # Define the folder name
 folder_name = f'{analysis_path}/Num_Spectrograms_{num_spec}_Window_Size_{window_size}_Stride_{stride}'
@@ -65,7 +65,7 @@ else:
 
 stacked_windows = np.load(folder_name+'/stacked_windows.npy') # An array of all the mini-spectrograms
 labels_for_window = np.load(folder_name+'/labels_for_window.npy') # The syllable labels for each time point in each mini-spectrogram
-embedding = np.load(folder_name+'/UMAP_Embedding.npy') # The pre-computed UMAP embedding (2 dimensional)
+# embedding = np.load(folder_name+'/UMAP_Embedding.npy') # The pre-computed UMAP embedding (2 dimensional)
 masked_frequencies = np.load(analysis_path+'/masked_frequencies_lowthresh_500_highthresh_7000.npy') # The frequencies we want to use for analysis. Excluding unnecessarily low and high frequencies
 stacked_window_times = np.load(folder_name+'/stacked_window_times.npy') # The onsets and ending of each mini-spectrogram
     
@@ -78,7 +78,7 @@ with open(folder_name+'/category_colors.pkl', 'rb') as f:
 mean_colors_per_minispec = np.load(folder_name+'/mean_colors_per_minispec.npy')
 
 
-batch_size = 20
+batch_size = 100
 num_batches = int(stacked_windows.shape[0]/batch_size)
 height = stacked_window_times.shape[1]
 width = int(stacked_windows.shape[1]/height)
@@ -94,7 +94,6 @@ batch_sizes_list = []
 for batch in my_dataloader:
     # Process the batch of data
     batch_sizes_list.append(batch.shape[0])
-    print(batch.shape)
     
 my_dict = {}
 for idx, batch in enumerate(my_dataloader):
