@@ -35,9 +35,9 @@ directory = bird_dir+ 'llb3_data_matrices/Python_Files'
 analysis_path = '/Users/ananyakapoor/Dropbox (University of Oregon)/Kapoor_Ananya/01_Projects/01_a_Rotations/Gardner_Lab/Analysis/BYOL_Analysis'
 
 # Parameters we set
-num_spec = 15
+num_spec = 1
 window_size = 100
-stride = 20
+stride = 10
 
 # Define the folder name
 folder_name = f'{analysis_path}/Num_Spectrograms_{num_spec}_Window_Size_{window_size}_Stride_{stride}'
