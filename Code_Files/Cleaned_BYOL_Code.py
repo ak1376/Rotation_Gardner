@@ -135,7 +135,7 @@ class TweetyNetCNN(nn.Module):
         self.conv2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=(5, 5), stride=1, padding=1)
         self.pool2 = nn.MaxPool2d(kernel_size=(8, 1), stride=(8, 1))
         self.relu = nn.ReLU()
-        self.fc = nn.Linear(150528, 2)
+        self.fc = nn.Linear(150528, 1000)
 
     def forward(self, x):
         x = x.float().to(device)
