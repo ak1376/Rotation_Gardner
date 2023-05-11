@@ -221,7 +221,7 @@ learner = BYOL(
     model,
     image_size = 151,
     projection_size = 2,           # the projection size
-    projection_hidden_size = 100,   # the hidden dimension of the MLP for both the projection and prediction
+    projection_hidden_size = 500,   # the hidden dimension of the MLP for both the projection and prediction
     augment_fn = augment_fn,
     augment_fn2 = augment_fn2
 )
