@@ -264,6 +264,7 @@ for i in range(num_epochs):
         opt.zero_grad()
         loss.backward()
         opt.step()
+        learner.update_moving_average() # update moving average of target encoder
 
     loss_list.append(np.mean(batch_loss))
     if i%1 == 0:
