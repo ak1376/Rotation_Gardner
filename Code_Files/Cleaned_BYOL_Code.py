@@ -40,7 +40,7 @@ window_size = 100
 stride = 10
 
 # Define the folder name
-folder_name = f'{analysis_path}/Num_Spectrograms_{num_spec}_Window_Size_{window_size}_Stride_{stride}'
+folder_name = f'{analysis_path}/Num_Spectrograms_{num_spec}_Window_Size_{window_size}_Stride_{stride}_PitchShift'
 
 # Create the folder if it doesn't already exist
 if not os.path.exists(folder_name+"/Plots/Window_Plots"):
@@ -65,8 +65,8 @@ else:
 
 stacked_windows = np.load(folder_name+'/stacked_windows.npy') # An array of all the mini-spectrograms
 labels_for_window = np.load(folder_name+'/labels_for_window.npy') # The syllable labels for each time point in each mini-spectrogram
-# embedding = np.load(folder_name+'/UMAP_Embedding.npy') # The pre-computed UMAP embedding (2 dimensional)
-masked_frequencies = np.load(analysis_path+'/masked_frequencies_lowthresh_500_highthresh_7000.npy') # The frequencies we want to use for analysis. Excluding unnecessarily low and high frequencies
+# embedding = np.load(folder_name+'/embedding_after_umap.npy') # The pre-computed UMAP embedding (2 dimensional)
+# masked_frequencies = np.load(analysis_path+'/masked_frequencies_lowthresh_500_highthresh_7000.npy') # The frequencies we want to use for analysis. Excluding unnecessarily low and high frequencies
 stacked_window_times = np.load(folder_name+'/stacked_window_times.npy') # The onsets and ending of each mini-spectrogram
     
 # open the file for reading in binary mode
@@ -201,6 +201,10 @@ class augmentations(nn.Module):
             dummyDat = dummyDat.to(device)
             return dummyDat
 
+    def augment_fn3(self, x):
+        pitch_shift = 0.01
+        return x + pitch_shift
+        
 
 
 
@@ -216,6 +220,7 @@ augmentations = augmentations(stacked_windows_3d, my_dict, window_size, width, 1
 
 augment_fn = augmentations.augment_fn
 augment_fn2 = augmentations.augment_fn2
+augment_fn3 = augmentations.augment_fn3
 # resnet = resnet.to(device)
 learner = BYOL( 
     model,
@@ -223,7 +228,7 @@ learner = BYOL(
     projection_size = 2,           # the projection size
     projection_hidden_size = 500,   # the hidden dimension of the MLP for both the projection and prediction
     augment_fn = augment_fn,
-    augment_fn2 = augment_fn2
+    augment_fn2 = augment_fn3
 )
 
 learner = learner.to(device)
@@ -368,6 +373,8 @@ show(p)
 reducer = umap.UMAP()
 embedding_after_umap = reducer.fit_transform(embedding_arr)
 
+output_file(filename=f'{folder_name}/Plots/byol_embedding_after_umap_results.html')
+
 # Convert the UMAP embedding to a Pandas Dataframe
 embedding_after_umap_df = pd.DataFrame(embedding_after_umap, columns=('x', 'y'))
 
@@ -400,16 +407,11 @@ p.add_tools(HoverTool(tooltips="""
 
 # Set the image path for each data point
 source.data['image'] = []
-for i in np.arange(spec_df.shape[0]):
-    source.data['image'].append(f'{folder_name}/Plots/Window_Plots/Window_{i}.png')
+for i in np.arange(embedding_after_umap_df.shape[0]):
+    source.data['image'].append(f'https://raw.githubusercontent.com/ak1376/Rotation_Gardner/main/Num_Spectrograms_50_Window_Size_100_Stride_10/Plots/Window_Plots/Window_{i}.png')
 
 show(p)
-
-
-
-
-
-
+save(p)
 
 
 
